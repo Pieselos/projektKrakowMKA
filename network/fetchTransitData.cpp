@@ -8,7 +8,7 @@ static size_t writeCallback(void* contents, size_t size, size_t nmemb, void* use
     return size * nmemb;
 }
 
-bool fetchTransitData(const std::string& url, const std::string& outputPath) {
+bool fetchTransitData::downloadMenager::downloadFile(const std::string& url, const std::string& outputPath) {
     CURL* curl = curl_easy_init();
     if (!curl) return false;
 

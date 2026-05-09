@@ -1,4 +1,12 @@
 #pragma once
 #include <string>
 
-bool fetchTransitData(const std::string& url, const std::string& outputPath);
+namespace fetchTransitData
+{
+    class downloadMenager
+    {
+    public:
+        static bool downloadFile(const std::string& url, const std::string& outputPath);
+    };
+
+}
