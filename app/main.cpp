@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include "engine/engine.h"
 #include "fetchTransitData.h"
@@ -20,10 +21,10 @@ int main() {
         std::cerr << "Bad file structure. Aborting program\n";
         return static_cast<int>(utilities::ErrorCodes::badFileStructure);
     }
-
+    bool downloadFlag = false;
     for (const auto& s : fileNamesVector)
     {
-        bool downloadFlag = false;
+        
         std::string path = "../data/" + s;
 
         if (!std::filesystem::exists(path) || utilities::hoursSince(path) > 24)
@@ -52,7 +53,7 @@ int main() {
                 }
                 else
                 {
-                    std::cout << "Download failed ❌\n";
+                    std::cout << "Download failed" << std::endl;
                     std::this_thread::sleep_for(std::chrono::seconds(5));
                 }
             }
@@ -69,7 +70,7 @@ int main() {
             }
         }
 
-        // ✅ FINALNA WALIDACJA
+
         if (!downloadFlag ||
             !std::filesystem::exists(path) ||
             std::filesystem::file_size(path) == 0)
@@ -78,4 +79,27 @@ int main() {
             return static_cast<int>(utilities::ErrorCodes::fetchFilesError);
         }
     }
+    
+    if (downloadFlag || !std::filesystem::exists("../data/T/stops.txt") || !std::filesystem::exists("../data/B/stops.txt"))
+    {
+        std::cout << "Removing old files..." << std::endl;
+        std::filesystem::remove_all("../data/T");
+        std::filesystem::remove_all("../data/B");
+        for (const auto& s : fileNamesVector)
+            try
+            {
+                std::cout << "Unzipping " << s << std::endl;
+                utilities::unzipAll("../data/" + s, "../data/" + s.substr(9,1));
+            }catch (std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return static_cast<int>(utilities::ErrorCodes::unzipError);
+            }
+    }
+
+
+
+
+
+
 }

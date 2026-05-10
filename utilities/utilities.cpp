@@ -5,6 +5,8 @@
 #include "utilities.h"
 #include <filesystem>
 #include <chrono>
+#include <iostream>
+
 #include "miniz.h"
 
 
@@ -36,4 +38,42 @@ bool utilities::checkZipFileIntegrity(const std::string& path)
 
     return fileCount > 0;
 
+}
+
+
+bool utilities::unzipAll(const std::string& zipPath, const std::string& outputDir) {
+    mz_zip_archive zip{};
+
+    if (!mz_zip_reader_init_file(&zip, zipPath.c_str(), 0)) {
+       throw std::runtime_error("Failed to open zip file");
+    }
+
+    int fileCount = mz_zip_reader_get_num_files(&zip);
+
+    for (int i = 0; i < fileCount; i++) {
+        mz_zip_archive_file_stat file_stat;
+
+        if (!mz_zip_reader_file_stat(&zip, i, &file_stat)) {
+            mz_zip_reader_end(&zip);
+            throw std::runtime_error("Failed to read file stat");
+        }
+
+        std::string filename = file_stat.m_filename;
+        std::string outPath = outputDir + "/" + filename;
+
+        // tworzenie katalogów jeśli potrzeba
+        std::filesystem::create_directories(
+            std::filesystem::path(outPath).parent_path()
+        );
+
+        if (!mz_zip_reader_extract_to_file(&zip, i, outPath.c_str(), 0)) {
+            mz_zip_reader_end(&zip);
+            throw std::runtime_error("Failed to extract file");
+        }
+
+        std::cout << "Extracted: " << filename << "\n";
+    }
+
+    mz_zip_reader_end(&zip);
+    return true;
 }

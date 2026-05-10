@@ -16,10 +16,13 @@ namespace utilities
     {
         OK,
         fetchFilesError,
-        badFileStructure
+        badFileStructure,
+        unzipError,
     };
 
     bool checkZipFileIntegrity(const std::string& path);
+    bool unzipAll(const std::string& zipPath, const std::string& outputDir);
+
 }
 
 
