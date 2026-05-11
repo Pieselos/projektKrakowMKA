@@ -81,6 +81,12 @@ void loadStopTimes(
             stopSequence
         });
     }
+    for (auto& [stop, vec] : departuresByStop) {
+        std::sort(vec.begin(), vec.end(),
+            [](const engine::StopTime& a, const engine::StopTime& b) {
+                return a.departureTime < b.departureTime;
+            });
+    }
 
     std::cout << "Loaded stop_times" << std::endl;
 }
@@ -101,6 +107,7 @@ engine::TransportType engine::mapRouteType(int type)
     return TransportType::OTHER;
 
 }
+
 
 
 void loadTrips(
@@ -508,3 +515,60 @@ bool engine::ScheduleEngine::loadBinary(const std::string& path)
 {
     return engine::loadBinary(path, departuresByStop, trips, routes);
 }
+
+std::vector<engine::Departure> engine::ScheduleEngine::getDepartures(int stopId, int currentTime, int limit)
+{
+    std::vector<Departure> result;
+
+    // ✅ brak przystanku
+    if (!departuresByStop.contains(stopId))
+        return result;
+
+    auto& vec = departuresByStop[stopId];
+
+    // ✅ znajdź pierwszy przyszły kurs
+    auto it = std::lower_bound(
+        vec.begin(),
+        vec.end(),
+        currentTime,
+        [](const StopTime& st, int time) {
+            return st.departureTime < time;
+        }
+    );
+
+    // ✅ iteruj po kolejnych odjazdach
+    for (; it != vec.end() && result.size() < limit; ++it)
+    {
+        int tripId = it->tripId;
+
+        // ✅ znajdź trip
+        if (!trips.contains(tripId))
+            continue;
+
+        const auto& trip = trips.at(tripId);
+
+        // 🔥 ✅ KLUCZOWY FILTR CALENDAR
+        if (!activeServices.contains(trip.serviceId))
+            continue;
+
+        int routeId = trip.routeId;
+
+        // ✅ znajdź route
+        if (!routes.contains(routeId))
+            continue;
+
+        const auto& route = routes.at(routeId);
+
+        // ✅ dodaj wynik
+        result.push_back({
+            it->departureTime,
+            route.shortName,
+            trip.headsign,
+            mapRouteType(route.type)
+        });
+    }
+
+    return result;
+}
+
+

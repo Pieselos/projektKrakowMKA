@@ -12,6 +12,7 @@
 #include <chrono>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 #define BIN_VERSION 1
 #define BIN_MAGIC 0x47465453  // "GTFS"
@@ -53,6 +54,13 @@ namespace engine
         uint32_t version;
     };
 
+    struct Departure {
+        int time;
+        std::string line;
+        std::string destination;
+        TransportType type;
+    };
+
 
 
 
@@ -79,6 +87,7 @@ namespace engine
         void loadCalendarDates(const std::string& path);
         bool saveBinary(const std::string& path);
         bool loadBinary(const std::string& path);
+        std::vector<Departure> getDepartures(int stopId, int currentTime, int limit);
     };
 
 

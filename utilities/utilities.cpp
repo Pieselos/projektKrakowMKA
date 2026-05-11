@@ -6,8 +6,8 @@
 #include <filesystem>
 #include <chrono>
 #include <iostream>
-
 #include "miniz.h"
+
 
 
 long utilities::hoursSince(const std::string& path) {
@@ -77,3 +77,34 @@ bool utilities::unzipAll(const std::string& zipPath, const std::string& outputDi
     mz_zip_reader_end(&zip);
     return true;
 }
+
+
+std::string utilities::RouteTypeToString(engine::TransportType type)
+{
+
+    if (type == engine::TransportType::BUS) return "Bus";
+    if (type == engine::TransportType::TRAM) return "Tramwaj";
+
+    return "Other";
+
+}
+
+void utilities::displayDepartures(std::vector<engine::Departure>& departures)
+{
+    for (auto dep : departures)
+       std::cout << dep << std::endl;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const engine::Departure& obj)
+{
+    return os << obj.time << " " << obj.line << " " << obj.destination << " " << obj.type;
+}
+
+
+std::ostream& operator<<(std::ostream& os, const engine::TransportType type)
+{
+    return os << utilities::RouteTypeToString(type);
+}
+
+

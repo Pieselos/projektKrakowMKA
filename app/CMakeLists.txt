@@ -2,6 +2,8 @@
 add_executable(app
         main.cpp
         config.h
+        app.cpp
+        app.h
 
 )
 
