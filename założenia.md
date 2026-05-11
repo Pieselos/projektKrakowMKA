@@ -2,6 +2,16 @@ engine:
 parser -> bin
 później ładujemy do pamięci
 
+## Opis działania
+
+System analizuje dane GTFS, przekształcając je w zoptymalizowane struktury danych.
+
+Dane są indeksowane według przystanków (stop_id), co umożliwia szybkie wyszukiwanie odjazdów.
+
+Każdy odjazd jest powiązany z kursem (trip), linią (route) oraz typem transportu.
+
+Dodatkowo uwzględniany jest kalendarz kursowania, co pozwala filtrować odjazdy zgodnie z aktualną datą.
+
 ## stop_times.txt
 
 | pole             | typ        | opis                                  |
