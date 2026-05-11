@@ -117,6 +117,19 @@ namespace engine
 
 
 
+    bool loadBinary(
+        const std::string& path,
+        std::unordered_map<int, std::vector<engine::StopTime>>& departuresByStop,
+        std::unordered_map<int, engine::TripInfo>& trips,
+        std::unordered_map<int, engine::RouteInfo>& routes);
+
+    bool saveBinary(
+       const std::string& path,
+       std::unordered_map<int, std::vector<engine::StopTime>>& departuresByStop,
+       std::unordered_map<int, engine::TripInfo>& trips,
+       std::unordered_map<int, engine::RouteInfo>& routes);
+
+
 
 }
 

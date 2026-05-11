@@ -499,12 +499,12 @@ bool loadBinary(
 }
 
 
-bool ScheduleEngine::saveBinary(const std::string& path)
+bool engine::ScheduleEngine::saveBinary(const std::string& path)
 {
     return engine::saveBinary(path, departuresByStop, trips, routes);
 }
 
-bool ScheduleEngine::loadBinary(const std::string& path)
+bool engine::ScheduleEngine::loadBinary(const std::string& path)
 {
     return engine::loadBinary(path, departuresByStop, trips, routes);
 }
